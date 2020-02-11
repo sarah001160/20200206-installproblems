@@ -1,15 +1,20 @@
 <template>
   <div id="app">
-    <div class="card" style="width: 18rem;">
-  <img src="" class="card-img-top" alt="">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="btn btn-primary">Go somewhere</a>
-  </div>
-</div>
+    <ul class="nav">
+      <li class="nav-item">
+        <router-link class="nav-link active" :to="{name:'首頁'}">Home</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link class="nav-link" to="/page">Page</router-link>
+      </li> 
+    </ul>
     <img src="./assets/logo.png">
-    <HelloWorld/>
+    <!-- <HelloWorld/> -->
+     <router-view name="menu"></router-view>  <!--2再增加一個-->
+    <div class="container">
+       <router-view></router-view>  <!--1預設的-->
+    </div>
+   
   </div>
 </template>
 
