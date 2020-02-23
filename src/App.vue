@@ -1,34 +1,32 @@
 <template>
   <div id="app">
-    <ul class="nav">
-      <li class="nav-item">
-        <router-link class="nav-link active" :to="{name:'首頁'}">Home</router-link>
-      </li>
-      <li class="nav-item">
-        <router-link class="nav-link" to="/page">Page</router-link>
-      </li> 
-    </ul>
+      <router-view></router-view>  <!--1預設的-->
+    <!-- <a href="#" @click.prevent="signout">登出</a> -->
+    
+
     <img src="./assets/logo.png">
     <!-- <HelloWorld/> -->
-     <router-view name="menu"></router-view>  <!--2再增加一個-->
-    <div class="container">
-       <router-view></router-view>  <!--1預設的-->
-    </div>
-   
+       <button type="button" class="btn btn-primary">Primary</button>
   </div>
 </template>
 
 <script>
-import HelloWorld from '@/components/HelloWorld'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+name:'App',
+created(){
+    const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products`;
+    // const api = 'https://vue-course-api.hexschool.io/api/sarah/products';可以改成環境變數取得如上
+    //API 伺服器路徑
+    //所申請的API PATH
+    console.log(process.env.APIPATH,process.env.CUSTOMPATH)
+    this.$http.get(api).then((response)=>{
+        console.log(response.data);
+    })
+
+},
 }
 </script>
 
 <style lang="scss">
-@import "~bootstrap/scss/bootstrap";
+@import "./assets/all";
 </style>
