@@ -21,6 +21,7 @@ new Vue({
 router.beforeEach((to,from,next)=>{
   console.log('to',to,'from',from,'next',next) //
  if(to.meta.requiresAuth){
+  //  console.log('這裡需要驗證')//當我從login頁面直接切換回首頁就應該出現"這裡需要驗證"在console.log中
     const api = `${process.env.APIPATH}/api/user/check`;
     axios.post(api).then((response)=>{ //用axios取代this.http,因為這邊是router而非元件內部
        console.log(response.data)

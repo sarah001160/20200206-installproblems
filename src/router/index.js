@@ -12,13 +12,14 @@ export default new VueRouter ({
     linkActiveClass:'active',
     routes:[
         {
-            path:'*',//加入星號,可避免隨便亂輸入路徑進入部必要的頁面,加入星號以後就會直接導回登入頁面
+            path:'*',//加入星號,可避免隨便亂輸入路徑進入空白頁面,這樣隨便亂入不好,所以這邊加入星號以後,路徑就算亂key畫面也不會亂入,會直接導回登入頁面
             redirect:'login',
         },
         {
             name:'HelloWorld',
             path:'/',
             component:HelloWorld,
+            meta:{requiresAuth:true},
         },
         {
             name:'Login',
