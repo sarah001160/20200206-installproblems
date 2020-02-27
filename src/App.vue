@@ -4,9 +4,9 @@
     <!-- <a href="#" @click.prevent="signout">登出</a> -->
     
 
-    <img src="./assets/logo.png">
-    <!-- <HelloWorld/> -->
-       <button type="button" class="btn btn-primary">Primary</button>
+    <!-- <img src="./assets/logo.png">
+    <!--- HelloWorld/-->
+       <!-- <button type="button" class="btn btn-primary">Primary</button> --> 
   </div>
 </template>
 

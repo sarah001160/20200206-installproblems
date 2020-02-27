@@ -30,7 +30,7 @@ export default {
   },
   methods:{
     signin(){
-       const api = `${process.env.APIPATH}/admin/signin`;
+       const api = `${process.env.APIPATH}/admin/signin`; //六角的api for登入用
        const vm =this;
        this.$http.post(api,vm.user).then((response)=>{
        console.log(response.data)

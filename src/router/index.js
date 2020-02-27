@@ -4,7 +4,8 @@ import VueRouter from 'vue-router';
 
 import HelloWorld from '@/components/HelloWorld';
 import Login from '@/components/pages/Login';
-
+import Dashboard from '@/components/Dashboard';
+import products from '@/components/pages/products';
 
 Vue.use(VueRouter);
 export default new VueRouter ({
@@ -19,13 +20,27 @@ export default new VueRouter ({
             name:'HelloWorld',
             path:'/',
             component:HelloWorld,
-            meta:{requiresAuth:true},
+           
         },
         {
             name:'Login',
             path:'/login', //新增login的路徑
             component:Login,//放元件的名稱(集中在components資料夾底下的vue檔案)
         },
+        {
+            path:'/admin',
+            name:'Dashboard',
+            component:Dashboard,
+            children:[
+                {
+                    path:'products',
+                    name:'products',
+                    component:products,
+                    meta:{requiresAuth:true},
+                }
+            ]
+        },
+            
       
     ]
 });
