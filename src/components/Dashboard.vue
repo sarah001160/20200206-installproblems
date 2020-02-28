@@ -3,14 +3,12 @@
   
 <navbar/>
 <div class="container-fluid">
+   
   <div class="row">
-      <sidebar></sidebar>
-   
-    <main></main>
-     <router-view></router-view>
-   
-
-   
+    <sidebar></sidebar>   
+    <main role="main">
+      <router-view></router-view>
+    </main>
   </div>
 </div>
 
@@ -21,10 +19,12 @@
 import sidebar from './sidebar';
 import navbar from './navbar';
 
+
 export default{
-component:{
+components:{//匯入components資料夾裡面的sidebar及nabar元件
 sidebar,
 navbar,
+
 }
 };
 </script>
