@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 //官方元件
 
-import HelloWorld from '@/components/HelloWorld';
+// import HelloWorld from '@/components/HelloWorld';
 import Login from '@/components/pages/Login';
 import Dashboard from '@/components/Dashboard';
 import products from '@/components/pages/products';
@@ -16,12 +16,12 @@ export default new VueRouter ({
             path:'*',//加入星號,可避免隨便亂輸入路徑進入空白頁面,這樣隨便亂入不好,所以這邊加入星號以後,路徑就算亂key畫面也不會亂入,會直接導回登入頁面
             redirect:'login',
         },
-        {
-            name:'HelloWorld',
-            path:'/',
-            component:HelloWorld,
+        // {
+        //     name:'HelloWorld',
+        //     path:'/',
+        //     component:HelloWorld,
            
-        },
+        // },
         {
             name:'Login',
             path:'/login', //新增login的路徑
