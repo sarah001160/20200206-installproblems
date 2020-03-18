@@ -109,7 +109,7 @@ export default {
       vm.status.loadingItem = id;
       this.$http.get(url).then((response) => {
          vm.product = response.data.product;
-         $('#porductModal').modal('.show');
+         $('#productModal').modal('.show');
       console.log(response);
       vm.status.loadingItem = '';
       });
