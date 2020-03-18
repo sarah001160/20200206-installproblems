@@ -1,5 +1,9 @@
 <template>
 <div>
+    <div class="vld-parent">
+        <loading :active.sync="isLoading"></loading>
+    </div>
+
     <div class="text-right mt-4">
          <button class="btn btn-primary" @click="openModal(true)">建立新的產品</button><!--點選此按鈕將會觸發#productModal-->
     </div>
@@ -19,10 +23,10 @@
                <td>{{item.category}}</td>
                <td>{{item.item}}</td>
                <td class="text-right">
-                   {{item.origin_price}}
+                   {{item.origin_price|currency}}
                </td>
                <td class="text-right">
-                   {{item.price}}
+                   {{item.price |currency}}
                </td>
                <td>
                    <span v-if="item.is_enabled" class="text-success">啟用</span>
@@ -35,6 +39,21 @@
            </tr>
        </tbody>
     </table>
+    <nav arial-label="Page navigation example">
+        <ul class="pagination">
+             <li class="page-item" :class="{'disabled': !pagination.has_pre}">
+                 <a class="page-link" href="#" @click.prevent="getProducts(pagination.current_page-1)">Previous</a>
+             </li>
+            <li class="page-item" v-for="page in pagination.total_pages" :key="page" :class="{'active':pagination.current_page===page}">
+                <a class="page-link" href="#" @click.prevent ="getProducts(page)">{{page}}</a>
+            </li>
+             <li class="page-it em" :class="{'disabled':!pagination.has_next}">
+                 <a class="page-link" href="#" @click.prevent="getProducts(pagination.current_page+1)">Next</a>
+            </li>
+            <!-- <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li> --> 
+        </ul>
+    </nav>
     <!-- Modal 以下請到Bootstrap官網複製版型來使用https://getbootstrap.com/docs/4.4/components/modal/-->
     <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -57,7 +76,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="customFile">或 上傳圖片
-                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <i class="fas fa-spinner fa-spin" v-if="status.fileUploading"></i>
                                 </label>
                                 <input type="file" id="customFile" class="form-control" ref="files" @change="uploadFile">
                             </div>
@@ -127,18 +146,26 @@ export default{
     data(){
         return{
             products:[],
+            pagination:{},
             tempProduct: {},
             isNew: false,
+            isLoading:false,
+            status:{
+                fileUploading:false,
+            },
         }
     },
     methods:{
-        getProducts(){
-            const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/products`; // 'http://localhost:3000/api/casper/products';
+        getProducts(page=1){
+            const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/products?page=${page}`; // 'http://localhost:3000/api/casper/products';
             const vm = this;
             console.log(process.env.APIPATH,process.env.CUSTOMPATH)
+            vm.isLoading = true;//啟用getProduct時先啟用loading
             this.$http.get(api).then((response)=>{
             console.log(response.data);
+            vm.isLoading = false;//getProduct完成以後關閉loading
             vm.products = response.data.products;
+            vm.pagination = response.data.pagination;
             })
         },
        openModal(isNew, item) {
@@ -179,7 +206,7 @@ export default{
             this.$http.delete(url).then((response)=>{
             console.log(response,vm.tempProduct);
             $('#delProductModal').modal('hide');
-            vm.isLoading = fals;
+            // vm.isLoading = false;
             this.getProducts();
             });
         },
@@ -190,23 +217,28 @@ export default{
             const formData = new FormData();
             formData.append('file-to-update',uploadedFile);
             const url =`${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/upload`;
+            vm.status.fileUploading = true;//先跑true
             this.$http.post(url,formData,{
                 headers:{
                     'Content-Type':'multipart/form-data'
                 }
             }).then((response)=>{
                 console.log(response.data);
+                vm.status.fileUploading = false;//當post跑完,再跑false
                 if(response.data.success){
                 // vm.tempProduct.imageUrl =response.data.imageUrl
                 // console.log(vm.tempProduct);
                 vm.$set(vm.tempProduct,'imageUrl',response.data.imageUrl);
+                }else{
+                     this.$bus.$emit('messsage:push',response.data.message,'danger');//錯誤訊息的回饋
                 }
             })
         }
     },
 
-    created(){
+    created(){//錯誤訊息的回饋
         this.getProducts();
+        this.$bus.$emit('messsage:push','這裡是一段訊息','success');
     }    
 }
 

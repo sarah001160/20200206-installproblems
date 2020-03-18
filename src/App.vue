@@ -12,7 +12,7 @@
 
 <script>
 export default {
-name:'App',
+name:'App', //name係指id的名稱
 created(){
     const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products`;
     // const api = 'https://vue-course-api.hexschool.io/api/sarah/products';可以改成環境變數取得如上

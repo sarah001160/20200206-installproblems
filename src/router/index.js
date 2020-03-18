@@ -6,6 +6,8 @@ import VueRouter from 'vue-router';
 import Login from '@/components/pages/Login';
 import Dashboard from '@/components/Dashboard';
 import products from '@/components/pages/products';
+import CustomerOrder from '@/components/pages/CustomerOrders';
+
 
 Vue.use(VueRouter);
 export default new VueRouter ({
@@ -36,7 +38,19 @@ export default new VueRouter ({
                     path:'products',
                     name:'products',
                     component:products,
-                    meta:{requiresAuth:true},
+                    meta:{requiresAuth:true},//需要登入才能看的頁面
+                }
+            ]
+        },
+        {
+            path:'/',
+            name:'Dashboard',
+            component:Dashboard,
+            children:[
+                {
+                    path:'Customer_order',
+                    name:'CustomerOrder',
+                    component:CustomerOrder,
                 }
             ]
         },

@@ -34,8 +34,8 @@ export default {
        const vm =this;
        this.$http.post(api,vm.user).then((response)=>{
        console.log(response.data)
-        if (response.data.success){
-         vm.$router.push('/admin/products');
+        if (response.data.success){ //當登入成功的時候
+         vm.$router.push('/admin/products');//跳轉products頁面
        }
        });
       
