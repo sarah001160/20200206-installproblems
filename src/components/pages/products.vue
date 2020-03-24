@@ -153,7 +153,7 @@ export default{
             isNew: false,//只有點選建立新產品時isNew才能為true;簡言之這是用來判斷是否為新產品
             isLoading:false,
             status:{
-                fileUploading:false,
+                fileUploading:false,//局部讀取效果
             },
         }
     },
@@ -166,7 +166,7 @@ export default{
             this.$http.get(api).then((response)=>{
             console.log(response.data);
             vm.isLoading = false;//getProduct完成以後關閉loading
-            vm.products = response.data.products;
+            vm.products = response.data.products; //
             vm.pagination = response.data.pagination;
             })
         },
@@ -207,7 +207,7 @@ export default{
             const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product/${vm.tempProduct.id}`
             this.$http.delete(url).then((response)=>{
             console.log(response,vm.tempProduct);
-            $('#delProductModal').modal('hide');
+            $('#ProductModal').modal('hide');
             //vm.isLoading = false;
             this.getProducts();
             });
