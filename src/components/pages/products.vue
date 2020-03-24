@@ -34,20 +34,22 @@
                </td>
                <td>
                    <button class="btn btn-outline-primary btn-sm" @click="openModal(false,item)">編輯</button>
-                   <button class="btn btn-outline-primary btn-sm">刪除</button>
+                   <button class="btn btn-outline-primary btn-sm" @click="delProduct()">刪除</button>
                </td>
            </tr>
        </tbody>
     </table>
+    
+    <!--分頁-->
     <nav arial-label="Page navigation example">
         <ul class="pagination">
-             <li class="page-item" :class="{'disabled': !pagination.has_pre}">
-                 <a class="page-link" href="#" @click.prevent="getProducts(pagination.current_page-1)">Previous</a>
+             <li class="page-item" :class="{'disabled':!pagination.has_prev}">
+                 <a class="page-link" href="#" @click.prevent="getProducts(pagination.current_page -1 )">Previous</a>
              </li>
             <li class="page-item" v-for="page in pagination.total_pages" :key="page" :class="{'active':pagination.current_page===page}">
-                <a class="page-link" href="#" @click.prevent ="getProducts(page)">{{page}}</a>
+                <a class="page-link" href="#" @click.prevent="getProducts(page)">{{page}}</a>
             </li>
-             <li class="page-it em" :class="{'disabled':!pagination.has_next}">
+             <li class="page-item" :class="{'disabled':!pagination.has_next}">
                  <a class="page-link" href="#" @click.prevent="getProducts(pagination.current_page+1)">Next</a>
             </li>
             <!-- <li class="page-item"><a class="page-link" href="#">3</a></li>
@@ -121,7 +123,7 @@
                             <div class="form-group">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" v-model="tempProduct.is_enabled" :true-value="1"
-                                        :false-value="0" id="is_enabled">
+                                        :false-value="0" id="is_enabled"><!--0非啟用1啟用,true-value時是1 flase-value時是0-->
                                         <label class="form-check-label" for="is_enabled">是否啟用</label>
                                 </div>
                             </div>
@@ -145,10 +147,10 @@ import $ from 'jquery';
 export default{
     data(){
         return{
-            products:[],
-            pagination:{},
-            tempProduct: {},
-            isNew: false,
+            products:[],//放入item使用
+            pagination:{},//分頁
+            tempProduct: {},//你在modal裡面輸入的各項資料都會被帶入至tempProduct:{}
+            isNew: false,//只有點選建立新產品時isNew才能為true;簡言之這是用來判斷是否為新產品
             isLoading:false,
             status:{
                 fileUploading:false,
@@ -156,8 +158,8 @@ export default{
         }
     },
     methods:{
-        getProducts(page=1){
-            const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/products?page=${page}`; // 'http://localhost:3000/api/casper/products';
+        getProducts(page = 1){//es6方法,預設先帶1,若之後有別的數值將會改成帶入別的數值
+            const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/products?page=${page}`; //切換頁 'http://localhost:3000/api/casper/products';
             const vm = this;
             console.log(process.env.APIPATH,process.env.CUSTOMPATH)
             vm.isLoading = true;//啟用getProduct時先啟用loading
@@ -180,19 +182,19 @@ export default{
         },
         updateProduct() {
             let api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product`; // 'http://localhost:3000/api/casper/products';
-            let httpMethod = 'post';
+            let httpMethod = 'post';//預設httpMethod是post
             const vm = this;
             if (!vm.isNew) {
                 api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product/${vm.tempProduct.id}`;
-                httpMethod = 'put';
+                httpMethod = 'put';//若isNew為false,表示該欄位非新增,那記得把post改成put以更新api
             }
             console.log(process.env.APIPATH, process.env.CUSTOMPATH);
             this.$http[httpMethod](api, { data: vm.tempProduct }).then((response) => {
-                console.log(response.data);
+                console.log('updateProduct的console.log:'+ response.data);
                 if (response.data.success) {//如果data新增成功
                     $('#productModal').modal('hide');//modal收回去
                     vm.getProducts();//重新渲染介面
-                } else {//反之data新增不成功
+                } else {//
                     $('#productModal').modal('hide');//modal收回去
                     vm.getProducts();//重新渲染介面
                     console.log('新增失敗');//console顯示失敗訊息
@@ -200,13 +202,13 @@ export default{
             // vm.products = response.data.products;
              });
         },
-        delProduct(){
+        delProduct(){//刪除的功能沒有出來;我尚未找到原因2020/3/23
             const vm = this;
             const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product/${vm.tempProduct.id}`
             this.$http.delete(url).then((response)=>{
             console.log(response,vm.tempProduct);
             $('#delProductModal').modal('hide');
-            // vm.isLoading = false;
+            //vm.isLoading = false;
             this.getProducts();
             });
         },

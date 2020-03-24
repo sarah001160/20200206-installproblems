@@ -21,7 +21,7 @@
             </div>
           </div>
         <div class="card-footer d-flex">
-            <button @click="getProduct(item)" type="button" class="btn btn-outline-secondary btn-sm">
+            <button @click="getProduct(item.id)" type="button" class="btn btn-outline-secondary btn-sm">
               <i class="fas fa-spinner fa-spin" v-if="status.loadingItem.id === item.id"></i>
               查看更多
             </button>
@@ -74,6 +74,47 @@
         </div>
      </div>
     </div>
+
+    <div class="my-5 row justify-content-center">
+       <table class="table">
+          <thead>
+            <th></th>
+            <th>品名</th>
+            <th>數量</th>
+           <th>單價</th>
+          </thead>
+          <tbody>
+            <tr v-for="item in cart.carts" :key="item.id" v-if="cart.carts"><!---為何要加入v-if??-->
+              <td class="align-middle">
+                <button type="button" class="btn btn-outline-danger btn-sm" @click="removeCartItem(item.id)">
+                  <!--要記得刪除時,帶入item的id-->
+                  <i class="far fa-trash-alt"></i>
+               </button>
+              </td>
+              <td class="align-middle">
+                {{ item.product.title }}
+                <!-- <div class="text-success" v-if="item.coupon">
+                  已套用優惠券
+                </div> -->
+              </td>
+              <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
+              <td class="align-middle text-right">{{ item.final_total }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+           <tr>
+              <td colspan="3" class="text-right">總計</td>
+              <td class="text-right">{{ cart.total }}</td>
+            </tr>
+            <!-- <tr v-if="cart.final_total">
+              <td colspan="3" class="text-right text-success">折扣價</td>
+              <td class="text-right text-success">{{ cart.final_total }}</td>
+            </tr> -->
+          </tfoot>
+        </table>
+      
+    </div>
+    
    
   </div>
 </template>
@@ -84,11 +125,12 @@ export default {
   data() {
     return {
       products: [],
-      product:{},//存放modal的資料
+     product:{},//存放modal的資料
       status:{
         loadingItem:'',//loadingItem存放的值是產品的id,判斷哪一個產品正在讀取中
       },
-      isLoading: false,
+      cart:{},
+      isLoading:false,
       
     }
   },
@@ -97,8 +139,8 @@ export default {
       const vm = this;
      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products`;
       vm.isLoading = true;
-      this.$http.get(url).then((response) => {
-        vm.products = response.data.products;
+      this.$http.get(url).then((response) => {//get讀取api資料後再執行.then()的內容
+        vm.products = response.data.products;//去console.log看資料結構,才知道products是誰
        console.log(response);
         vm.isLoading = false;
       });
@@ -106,32 +148,54 @@ export default {
     getProduct(id){//沒有s
       const vm = this;
       const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/product/${id}`;
-      vm.status.loadingItem = id;
+      vm.status.loadingItem = id;//讀取中的商品id
       this.$http.get(url).then((response) => {
-         vm.product = response.data.product;
-         $('#productModal').modal('.show');
+         vm.product = response.data.product;//去console.log裡面看資料結構,就能得知product是誰
+         $('#productModal').modal('show');
       console.log(response);
       vm.status.loadingItem = '';
       });
     },
-     addtoCart(id, qty = 1) {//es6預設值,若函數沒有帶數量,則會自動代1
+     addtoCart(id, qty = 1) {//es6預設值,若函式沒有帶數量,則會自動代1
       const vm = this;
-      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
+      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;//購物車的api
       vm.status.loadingItem = id;
       const cart = {
         product_id: id,
         qty,
       };
-      this.$http.post(url, { data: cart }).then((response) => {
+      this.$http.post(url, { data: cart }).then((response) => {//將讀取中的商品id,寫入購物車的api
         console.log(response);
-        vm.status.loadingItem = '';
+        vm.status.loadingItem = '';//讀取中的商品id清空
         vm.getCart();
-        $('#productModal').modal('hide');
+        $('#productModal').modal('hide');//關閉modal
       });
     },
+    getCart(){
+      const vm = this;
+      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;//購物車的api
+      vm.isLoading = true;//讀取中的圈圈
+      this.$http.get(url).then((response) => {//讀取購物車api資料後再執行.then()內容
+        // vm.products = response.data.products;
+        vm.cart = response.data.data; //cart{}的內容為console.log裡面資料結構中的data裡面的data{}
+        console.log(response);
+        vm.isLoading = false; //關閉讀取的圈圈
+      });
+    },
+    removeCartItem(id){
+      const vm =this;
+      const url=`${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart/${id}`;
+      vm.isLoading = true;
+      this.$http.delete(url).then((response)=>{//送出刪除的行為delete
+        vm.getCart();
+        vm.isLoading = false;
+      })
+    },
+
   },
   created() {
     this.getProducts();
+    this.getCart();
   },
 };
 </script>
