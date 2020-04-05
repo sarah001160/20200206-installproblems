@@ -1,4 +1,4 @@
-<template>
+<template><!---頁面最上方的導覽列 有登出的按鈕-->
    <div>
         <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Company name</a>

@@ -1,15 +1,19 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+
 //官方元件
 
 // import HelloWorld from '@/components/HelloWorld';
-import Login from '@/components/pages/Login';
-import Dashboard from '@/components/Dashboard';
-import products from '@/components/pages/products';
-import CustomerOrder from '@/components/pages/CustomerOrders';
+import Login from '@/components/pages/Login';//新增Login的元件
+import Dashboard from '@/components/Dashboard'; //新增Dashboard的元件
+import products from '@/components/pages/products';//新增products的元件
+import CustomerOrder from '@/components/pages/CustomerOrders';//新增CustomerOrder的元件
+import Coupon from '@/components/pages/Coupon'; //新增coupon的元件
+
 
 
 Vue.use(VueRouter);
+
 export default new VueRouter ({
     // mode:'history',不建議使用;因為要搭配後端
     linkActiveClass:'active',
@@ -54,7 +58,18 @@ export default new VueRouter ({
                 }
             ]
         },
-            
+        {
+            path:'/',
+            name:'Dashboard', //Dashboard的元件裡面要再增加子元件
+            component:Dashboard,
+            children:[ //子元件就是coupon元件
+                {
+                    path:'Coupon',
+                    name:'Coupon',
+                    component:Coupon,
+                }
+            ]
+        },  
       
     ]
 });

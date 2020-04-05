@@ -1,4 +1,4 @@
-<template>
+<template><!--產品列表--->
 <div>
     <div class="vld-parent">
         <loading :active.sync="isLoading"></loading>
@@ -19,7 +19,7 @@
            </tr>
        </thead>
        <tbody>
-           <tr v-for="(item) in products" :key="item.id">
+           <tr v-for="(item,key) in products" :key="item.id">
                <td>{{item.category}}</td>
                <td>{{item.item}}</td>
                <td class="text-right">
@@ -166,11 +166,11 @@ export default{
             this.$http.get(api).then((response)=>{
             console.log(response.data);
             vm.isLoading = false;//getProduct完成以後關閉loading
-            vm.products = response.data.products; //
-            vm.pagination = response.data.pagination;
+            vm.products = response.data.products; //去console.log看response資料結構,並找到data裡面的products屬性
+            vm.pagination = response.data.pagination;//去console.log看response資料結構並找到data裡面的pagination屬性
             })
         },
-       openModal(isNew, item) {
+       openModal(isNew, item) {//打開視窗
             if (isNew) {//如果isNew是true
                 this.tempProduct = {}; //給一個空物件
                 this.isNew = true;//並且變更isNew狀態為true
@@ -193,10 +193,10 @@ export default{
                 console.log('updateProduct的console.log:'+ response.data);
                 if (response.data.success) {//如果data新增成功
                     $('#productModal').modal('hide');//modal收回去
-                    vm.getProducts();//重新渲染介面
+                    vm.getProducts();//重新取得資料
                 } else {//
                     $('#productModal').modal('hide');//modal收回去
-                    vm.getProducts();//重新渲染介面
+                    vm.getProducts();//重新取得資料
                     console.log('新增失敗');//console顯示失敗訊息
                 }
             // vm.products = response.data.products;
@@ -204,19 +204,19 @@ export default{
         },
         delProduct(){//刪除的功能沒有出來;我尚未找到原因2020/3/23
             const vm = this;
-            const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product/${vm.tempProduct.id}`
+            const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product/${vm.tempProducts}`
             this.$http.delete(url).then((response)=>{
             console.log(response,vm.tempProduct);
-            $('#ProductModal').modal('hide');
+            // $('#ProductModal').modal('hide');
             //vm.isLoading = false;
             this.getProducts();
             });
         },
-        uploadFile(){
-            console.log(this);
-            const uploadedFile = this.$refs.files.files[0];
-            const vm = this;
-            const formData = new FormData();
+        uploadFile(){//上傳資料
+            console.log(this);//看一下this指的是甚麼
+            const uploadedFile = this.$refs.files.files[0];//去console.log看資料結構
+            const vm = this; 
+            const formData = new FormData();//不知道這甚麼意思
             formData.append('file-to-update',uploadedFile);
             const url =`${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/upload`;
             vm.status.fileUploading = true;//先跑true

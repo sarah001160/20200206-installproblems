@@ -1,4 +1,4 @@
-<template>
+<template><!--左側的列表 元件--->
     <div>
        
      <div class="sidebar-sticky">
@@ -13,11 +13,15 @@
         <ul class="nav flex-column mb-2">
           <li class="nav-item">
             <router-link class="nav-link" to="/admin/products">
-            <i class="fas fa-box-open"></i><!--這個是fontawesome的圖示-->
-            產品列表
+               <i class="fas fa-box-open"></i><!--這個是fontawesome的圖示-->
+                產品列表
             </router-link>
           </li>
-        
+          <li>
+              <router-link class="nav-link" to="/Coupon">
+              優惠卷
+              </router-link>
+          </li>
          
         </ul>
 
